@@ -4,9 +4,10 @@ const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const cors = require("cors");
 
+const app = express();
+
 const config = require("./config");
 
-const app = express();
 //connected to mongoose
 mongoose
   .connect("mongodb://localhost/Amazon", {
@@ -25,11 +26,9 @@ app.use(morgan("dev"));
 //middleware of cors => yo chai forntend and backend lai conneted smotherly
 app.use(cors());
 
-app.get("/", (req, res, next) => {
-  res.json({
-    user: "prabin"
-  });
-});
+//ROUTES TANEKO (/api/account lai chai perfix name vanxa)
+const userRoutes = require("./routes/account");
+app.use("/api/accounts", userRoutes);
 
 const port = process.env.PORT || 4004;
 app.listen(port, (req, res) => {
