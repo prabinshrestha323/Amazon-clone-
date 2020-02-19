@@ -34,15 +34,16 @@ const UserSchema = new Schema({
 UserSchema.pre("save", function(next) {
   var user = this;
   if (!user.isModified("password")) return next();
-  bcrypt.hash(user.password, null, null, function(er, hash) {
+  bcrypt.hash(user.password, null, null, function(err, hash) {
     if (err) return next(err);
     user.password = hash;
+    next();
   });
 });
 
 // compare garaxa password // user type in and database
-UserSchema.method.comparePassword = function(password) {
-  return bcrypt.compaserScny;
+UserSchema.methods.comparePassword = function(password) {
+  return bcrypt.compareSync(password, this.password);
 };
 
 //yo chai pic automatic avatar maa basna ko lai // profile maa

@@ -1,9 +1,8 @@
-const express = require("express");
-const router = express.Router();
+const router = require("express").Router();
 const jwt = require("jsonwebtoken");
 
 const User = require("../models/user");
-const config = require("../config");
+const CONFIG = require("../config");
 
 router.post("/signup", (req, res, next) => {
   const user = new User();
@@ -16,7 +15,7 @@ router.post("/signup", (req, res, next) => {
   User.findOne({ email: req.body.email }, (err, existingUser) => {
     if (existingUser) {
       res.json({
-        sucess: false,
+        success: false,
         message: "Account with that email is already exist"
       });
     } else {
@@ -26,13 +25,14 @@ router.post("/signup", (req, res, next) => {
         {
           user: user
         },
-        config.secret,
+        CONFIG.SECRET,
         {
           expiresIn: "7d"
         }
       );
+
       res.json({
-        sucess: true,
+        success: true,
         message: "Enjoy your token",
         token: token
       });
@@ -40,4 +40,50 @@ router.post("/signup", (req, res, next) => {
   });
 });
 
+router.post("/login", (req, res, next) => {
+  User.findOne(
+    {
+      email: req.body.email
+    },
+    (err, user) => {
+      if (err) throw err;
+
+      if (!user) {
+        res.json({
+          success: false,
+          message: "Authenticated failed, User not found"
+        });
+      } else if (user) {
+        var validPassword = user.comparePassword(req.body.password);
+
+        if (!validPassword) {
+          res.json({
+            success: false,
+            message: "Authentication failed. Wrong password"
+          });
+        } else {
+          var token = jwt.sign(
+            {
+              user: user
+            },
+            CONFIG.SECRET,
+            {
+              expiresIn: "7d"
+            }
+          );
+
+          res.json({
+            success: true,
+            message: "Enjoy your token",
+            token
+          });
+        }
+      }
+    }
+  );
+});
+
+router.get("/home", (req, res) => {
+  res.send("this is home");
+});
 module.exports = router;

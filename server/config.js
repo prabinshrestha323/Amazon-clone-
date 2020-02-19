@@ -1,5 +1,5 @@
-module.export = {
-  //database: "mongodb://localhost/Amazon",
+module.exports = {
+  database: "mongodb://localhost/Amazon",
   port: "4004",
-  secret: "davissecret111"
+  SECRET: "davissecret"
 };
