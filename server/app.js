@@ -30,6 +30,8 @@ app.use(cors());
 const userRoutes = require("./routes/account");
 app.use("/api/accounts", userRoutes);
 
+const mainRoutes = require("./routes/main");
+app.use("/api", mainRoutes);
 const port = process.env.PORT || 4004;
 app.listen(port, (req, res) => {
   console.log(`this is our port no 4004`);
